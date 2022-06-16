@@ -1,4 +1,7 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const theme = extendTheme({
   fonts: {
@@ -10,9 +13,14 @@ const theme = extendTheme({
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <div className="App">
-        <div>Hello world</div>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </ChakraProvider>
   );
 }
