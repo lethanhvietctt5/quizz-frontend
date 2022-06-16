@@ -31,12 +31,16 @@ function Header() {
         </Flex>
 
         <Flex gap="4">
-          <Button colorScheme="green" size="sm">
-            Login
-          </Button>
-          <Button colorScheme="teal" variant="outline" size="sm">
-            Register
-          </Button>
+          <Link to="/login">
+            <Button colorScheme="green" size="sm">
+              Login
+            </Button>
+          </Link>
+          <Link to="/register">
+            <Button colorScheme="teal" variant="outline" size="sm">
+              Register
+            </Button>
+          </Link>
         </Flex>
       </Flex>
     </Box>

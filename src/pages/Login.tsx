@@ -1,7 +1,51 @@
-import { Button, Input } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Button, Input, useToast } from "@chakra-ui/react";
+import { useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api";
 
 function Login() {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const toast = useToast();
+  const navigate = useNavigate();
+
+  async function handleLogin() {
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    if (!email || !password) {
+      toast({
+        title: "Login failed.",
+        description: "Please enter all field.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+
+    const res = await api.post("/auth", {
+      email: email,
+      password: password,
+    });
+
+    if (res.status === 200) {
+      navigate("/home");
+      return;
+    }
+
+    toast({
+      title: "Login failed.",
+      description: "Something was wrong.",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
+  }
+
   return (
     <div className="w-full h-screen flex justify-center bg-gray-200">
       <div className="w-1/3 flex flex-col items-center justify-center space-y-12 bg-white my-20 rounded-3xl">
@@ -10,6 +54,7 @@ function Login() {
           <div>
             <div className="font-black">Email</div>
             <Input
+              ref={emailRef}
               type="email"
               placeholder="Enter email"
               focusBorderColor="green.300"
@@ -18,6 +63,7 @@ function Login() {
           <div>
             <div className="font-black">Password</div>
             <Input
+              ref={passwordRef}
               type={"password"}
               placeholder="Enter password"
               focusBorderColor="green.300"
@@ -36,6 +82,7 @@ function Login() {
             colorScheme="green"
             color="white"
             size="md"
+            onClick={handleLogin}
           >
             Login
           </Button>
