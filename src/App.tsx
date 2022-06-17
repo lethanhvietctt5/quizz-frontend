@@ -1,7 +1,9 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import Library from "pages/Library";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import store from "redux/store";
+import ProtectedRoute from "route/ProtectedRoute";
 import MainLayout from "./layouts";
 import CreateGame from "./pages/CreateGame";
 import HomePage from "./pages/HomePage";
@@ -24,9 +26,12 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/" element={<MainLayout />}>
-                <Route path="home" element={<HomePage />} />
-                <Route path="create" element={<CreateGame />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<MainLayout />}>
+                  <Route path="home" element={<HomePage />} />
+                  <Route path="library" element={<Library />} />
+                  <Route path="create" element={<CreateGame />} />
+                </Route>
               </Route>
             </Routes>
           </div>

@@ -100,13 +100,23 @@ const CreateGame: React.FC = () => {
   }
 
   function changeCorrectAnser(ans: string) {
+    let correctAns: string;
     if (currentQuestion.correct_ans.includes(ans)) {
-      let correctAns = currentQuestion.correct_ans.replace(ans, "");
+      correctAns = currentQuestion.correct_ans.replace(ans, "");
       setCurrentQuestion({ ...currentQuestion, correct_ans: correctAns });
     } else {
-      let correctAns = currentQuestion.correct_ans + ans;
+      correctAns = currentQuestion.correct_ans + ans;
       setCurrentQuestion({ ...currentQuestion, correct_ans: correctAns });
     }
+
+    let newQuestions = questions.map((question) => {
+      if (question.question_id === currentQuestion.question_id) {
+        return { ...question, correct_ans: correctAns };
+      }
+      return question;
+    });
+
+    setQuestions([...newQuestions]);
   }
 
   async function saveGame() {

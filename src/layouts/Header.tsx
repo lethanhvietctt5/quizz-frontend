@@ -29,7 +29,9 @@ function Header() {
         py="1"
       >
         <Flex align="center" gap="20">
-          <Image h="12" src={logo} />
+          <Link to="/home">
+            <Image h="12" src={logo} />
+          </Link>
           <Flex gap="16">
             <HeaderMenuItem Icon={VscLibrary} label="Library" />
             <HeaderMenuItem Icon={IoStatsChartOutline} label="Report" />
