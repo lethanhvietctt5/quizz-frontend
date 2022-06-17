@@ -17,7 +17,7 @@ function Header() {
         justify="space-between"
         fontWeight="bold"
         letterSpacing="tight"
-        py="4"
+        py="1"
       >
         <Flex align="center" gap="20">
           <Image h="12" src={logo} />
