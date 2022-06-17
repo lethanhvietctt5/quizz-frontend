@@ -8,6 +8,8 @@ type Props = {
   question: Question;
   currentQuestion: Question;
   setCurrentQuestion: React.Dispatch<React.SetStateAction<Question>>;
+  duplicateQuestion: () => void;
+  deleteQuestion: (question_id: string) => void;
 };
 
 function SlideQuizz({
@@ -15,23 +17,23 @@ function SlideQuizz({
   question,
   currentQuestion,
   setCurrentQuestion,
+  duplicateQuestion,
+  deleteQuestion,
 }: Props) {
   const bgColor =
     currentQuestion.question_id === question.question_id ? "blue.100" : "white";
 
   return (
-    <Flex
-      w="full"
-      px="4"
-      py="2"
-      backgroundColor={bgColor}
-      onClick={() => {
-        setCurrentQuestion(question);
-      }}
-    >
+    <Flex w="full" px="4" py="2" backgroundColor={bgColor}>
       <Flex color="gray.600" direction="column" justify="center" gap="3" mr="2">
-        <HiOutlineDocumentDuplicate />
-        <RiDeleteBin6Line />
+        <HiOutlineDocumentDuplicate
+          cursor="pointer"
+          onClick={duplicateQuestion}
+        />
+        <RiDeleteBin6Line
+          cursor="pointer"
+          onClick={() => deleteQuestion(question.question_id)}
+        />
       </Flex>
       <Box
         h="32"
@@ -41,6 +43,9 @@ function SlideQuizz({
         rounded="md"
         backgroundColor="gray.100"
         p="3"
+        onClick={() => {
+          setCurrentQuestion(question);
+        }}
       >
         <Flex w="full" direction="column" justify="space-between" h="full">
           <Text w="full" align="center" fontSize="sm" noOfLines={1}>

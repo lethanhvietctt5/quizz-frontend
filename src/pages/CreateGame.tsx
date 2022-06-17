@@ -52,6 +52,43 @@ const CreateGame: React.FC = () => {
     setQuestions([...questions, initEmptyQuestion()]);
   }
 
+  function duplicateQuestion() {
+    let newQuestions: Question[] = [];
+    questions.forEach((question) => {
+      if (question.question_id === currentQuestion.question_id) {
+        newQuestions.push(
+          Object.assign({}, { ...question, question_id: uuidv4() })
+        );
+      }
+      newQuestions.push(Object.assign({}, { ...question }));
+    });
+
+    setQuestions([...newQuestions]);
+  }
+
+  function deleteQuestion(question_id: string) {
+    if (questions.length <= 1) {
+      toastError("You must have at least one question");
+      return;
+    }
+
+    let idx: number = questions.findIndex((question) => {
+      return question.question_id === question_id;
+    });
+
+    if (idx === 0) {
+      setCurrentQuestion(Object.assign({}, questions[0]));
+    } else {
+      setCurrentQuestion(Object.assign({}, questions[idx - 1]));
+    }
+
+    let newQuestions: Question[] = questions.filter((question) => {
+      return question.question_id !== question_id;
+    });
+
+    setQuestions(newQuestions);
+  }
+
   function toastError(message: string) {
     toast({
       title: message,
@@ -153,6 +190,8 @@ const CreateGame: React.FC = () => {
               {questions.map((question, idx) => (
                 <SlideQuizz
                   currentQuestion={currentQuestion}
+                  duplicateQuestion={duplicateQuestion}
+                  deleteQuestion={deleteQuestion}
                   key={idx}
                   index={idx}
                   question={question}
