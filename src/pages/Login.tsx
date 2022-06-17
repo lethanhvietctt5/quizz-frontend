@@ -1,6 +1,8 @@
 import { Button, Input, useToast } from "@chakra-ui/react";
+import { useAppDispatch } from "hooks";
 import { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "redux/slices/auth";
 import api from "../api";
 
 function Login() {
@@ -9,6 +11,7 @@ function Login() {
 
   const toast = useToast();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   async function handleLogin() {
     const email = emailRef.current?.value;
@@ -32,6 +35,7 @@ function Login() {
     });
 
     if (res.status === 200) {
+      dispatch(login(res.data));
       navigate("/home");
       return;
     }

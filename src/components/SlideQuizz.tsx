@@ -6,11 +6,29 @@ import Question from "../types/question";
 type Props = {
   index: number;
   question: Question;
+  currentQuestion: Question;
+  setCurrentQuestion: React.Dispatch<React.SetStateAction<Question>>;
 };
 
-function SlideQuizz({ index, question }: Props) {
+function SlideQuizz({
+  index,
+  question,
+  currentQuestion,
+  setCurrentQuestion,
+}: Props) {
+  const bgColor =
+    currentQuestion.question_id === question.question_id ? "blue.100" : "white";
+
   return (
-    <Flex w="full" px="4" mt="4">
+    <Flex
+      w="full"
+      px="4"
+      py="2"
+      backgroundColor={bgColor}
+      onClick={() => {
+        setCurrentQuestion(question);
+      }}
+    >
       <Flex color="gray.600" direction="column" justify="center" gap="3" mr="2">
         <HiOutlineDocumentDuplicate />
         <RiDeleteBin6Line />
@@ -26,12 +44,12 @@ function SlideQuizz({ index, question }: Props) {
       >
         <Flex w="full" direction="column" justify="space-between" h="full">
           <Text w="full" align="center" fontSize="sm" noOfLines={1}>
-            {question.quiz}
+            {question.content}
           </Text>
           <Flex justify="center">
             <Avatar
               bg="gray.200"
-              icon={<Text color="gray.400">{question.duration}</Text>}
+              icon={<Text color="gray.400">{question.duration_sec}</Text>}
             />
           </Flex>
           <Flex color="gray.400" direction="column" gap="1">

@@ -1,17 +1,17 @@
 import { CheckIcon } from "@chakra-ui/icons";
 import { Avatar, Flex, Icon, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Question from "../types/question";
 
 type Props = {
-  currentQuestion: number;
+  currentQuestion: Question;
   index: number;
   question: Question;
-  answerLabel: string;
+  answer: string;
   updateQuestion: (
-    index: number,
+    crt: Question,
     key: keyof Question,
-    value: string | number | string[]
+    value: string | number
   ) => void;
 };
 
@@ -19,10 +19,20 @@ function AnswerItem({
   currentQuestion,
   index,
   question,
-  answerLabel,
+  answer,
   updateQuestion,
 }: Props) {
+  const ansRef = useRef<HTMLInputElement>(null);
+
   const bgColors = ["red.600", "blue.600", "yellow.600", "green.600"];
+
+  useEffect(() => {
+    if (ansRef.current) {
+      ansRef.current.value = currentQuestion[
+        answer as keyof Question
+      ] as string;
+    }
+  }, [currentQuestion, answer]);
 
   return (
     <Flex
@@ -33,15 +43,18 @@ function AnswerItem({
       backgroundColor={bgColors[index]}
     >
       <Text color="white" fontSize="3xl">
-        {answerLabel}
+        {answer[answer.length - 1] + "."}
       </Text>
       <input
         type="text"
-        defaultValue={question.answers[index]}
+        ref={ansRef}
+        defaultValue={question[answer as keyof Question]}
         onChange={(e) => {
-          const newAnsers = question.answers;
-          newAnsers[index] = e.target.value;
-          updateQuestion(currentQuestion, "answers", newAnsers);
+          updateQuestion(
+            currentQuestion,
+            answer as keyof Question,
+            e.target.value
+          );
         }}
         className="w-full py-10 px-5 text-white bg-inherit rounded-md outline-none text-2xl"
       />

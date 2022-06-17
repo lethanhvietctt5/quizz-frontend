@@ -5,9 +5,9 @@ import Header from "./Header";
 
 function MainLayout() {
   return (
-    <Flex h="100vh" direction="column">
+    <Flex maxH="100vh" h="100vh" direction="column">
       <Header />
-      <Box flexGrow="1">
+      <Box flexGrow="1" h="fit-content">
         <Outlet />
       </Box>
     </Flex>

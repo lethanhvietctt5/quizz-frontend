@@ -1,62 +1,183 @@
-import { CheckIcon } from "@chakra-ui/icons";
-import { Avatar, Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  Input,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import AnswerItem from "../components/AnswerItem";
 import SlideQuizz from "../components/SlideQuizz";
 import Question from "../types/question";
-
-const emptyQuestion: Question = {
-  quiz: "",
-  duration: 10,
-  answers: [],
-  correctAnswer: [],
-};
-
-function changeValue<K extends keyof Question, V extends Question[K]>(
-  obj: Question,
-  field: K,
-  v: V
-) {
-  const newObj = { ...obj };
-  newObj[field] = v;
-  return newObj;
-}
+import { v4 as uuidv4 } from "uuid";
+import Game from "types/game";
+import api from "api";
+import { useAppSelector } from "hooks";
 
 const CreateGame: React.FC = () => {
-  const [questions, setQuestions] = useState<Question[]>([
-    { ...emptyQuestion },
-  ]);
+  const [questions, setQuestions] = useState<Question[]>([initEmptyQuestion()]);
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(
+    questions[0]
+  );
+  const [game, setGame] = useState<Game | null>(null);
+  const gameNameRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLInputElement>(null);
+  const auth = useAppSelector((state) => state.auth);
+  const toast = useToast();
 
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.value = currentQuestion.content;
+    }
+  }, [currentQuestion]);
 
   function updateQuestion(
-    index: number,
+    crtQues: Question,
     key: keyof Question,
-    value: string | number | string[]
+    value: string | number
   ) {
-    let updatedQues = changeValue(questions[index], key, value);
+    let updatedQues = changeValue(crtQues, key, value);
+    setCurrentQuestion(updatedQues);
+
     const newQuestions = questions.map((question, i) => {
-      if (i === index) {
-        return updatedQues;
-      }
+      if (question.question_id === crtQues.question_id) return updatedQues;
       return question;
     });
     setQuestions([...newQuestions]);
+  }
+
+  function addQuestion() {
+    setQuestions([...questions, initEmptyQuestion()]);
+  }
+
+  function toastError(message: string) {
+    toast({
+      title: message,
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
+  }
+
+  async function saveGame() {
+    if (gameNameRef.current && gameNameRef.current.value.length === 0) {
+      toastError("Please enter game name.");
+      return;
+    }
+
+    for (let question of questions) {
+      if (question.content.length === 0) {
+        toastError("Please enter question content for all question.");
+        return;
+      }
+
+      if (
+        question.ans_A.length === 0 ||
+        question.ans_B.length === 0 ||
+        question.ans_C.length === 0 ||
+        question.ans_D.length === 0
+      ) {
+        toastError("Please enter 4 answer for all question.");
+        return;
+      }
+
+      if (question.correct_ans.length === 0) {
+        toastError("Please select correct answer for all question.");
+        return;
+      }
+
+      if (!question.duration_sec) {
+        toastError("Invalid duration time.");
+        return;
+      }
+    }
+
+    let gameObj: Game | null = game;
+    if (game == null) {
+      const res = await api.post("/game", {
+        name: gameNameRef.current?.value,
+        author_id: auth.user_id,
+      });
+
+      if (res.status === 200) gameObj = res.data;
+    } else {
+      if (gameNameRef.current) {
+        const res = await api.patch("/game/" + game.game_id, {
+          name: gameNameRef.current.value,
+        });
+
+        if (res.status === 200) gameObj = res.data;
+      }
+    }
+
+    if (gameObj) {
+      setGame(gameObj);
+      for await (let question of questions) {
+        const res = await api.post("/question", {
+          ...question,
+          game_id: gameObj.game_id,
+        });
+        if (res.status !== 200) {
+          toastError("Create game failed.");
+          break;
+        }
+      }
+
+      toast({
+        title: "Game has saved successful.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   }
 
   return (
     <Box h="full">
       <Flex w="full" h="full">
         <Box w="15%" boxShadow="md" backgroundColor="white">
-          <Flex py="5" h="full" direction="column" justify="space-between">
-            <Box>
-              {questions.map((question, idx) => (
-                <SlideQuizz key={idx} index={idx} question={question} />
-              ))}
+          <Flex py="3" h="full" direction="column" justify="space-between">
+            <Box w="full" px="4" mb="2">
+              <Input
+                ref={gameNameRef}
+                w="full"
+                placeholder="Enter Game's name"
+                focusBorderColor="green.300"
+              />
             </Box>
+            <Flex h="73vh" direction="column" overflowY="scroll">
+              {questions.map((question, idx) => (
+                <SlideQuizz
+                  currentQuestion={currentQuestion}
+                  key={idx}
+                  index={idx}
+                  question={question}
+                  setCurrentQuestion={setCurrentQuestion}
+                />
+              ))}
+            </Flex>
 
-            <Button mx="5" colorScheme="green" size="sm">
+            <Button
+              mx="5"
+              colorScheme="green"
+              size="sm"
+              variant="outline"
+              onClick={addQuestion}
+            >
               Add slide
+            </Button>
+            <Button
+              mx="5"
+              mt="2"
+              colorScheme="green"
+              size="sm"
+              onClick={saveGame}
+            >
+              Save
             </Button>
           </Flex>
         </Box>
@@ -72,10 +193,11 @@ const CreateGame: React.FC = () => {
             <Box w="full" boxShadow="md" mt="10">
               <input
                 type="text"
+                ref={contentRef}
                 onChange={(e) => {
-                  updateQuestion(currentQuestion, "quiz", e.target.value);
+                  updateQuestion(currentQuestion, "content", e.target.value);
                 }}
-                defaultValue={questions[currentQuestion].quiz}
+                defaultValue={currentQuestion.content}
                 className="w-full py-3 rounded-md outline-none px-10 text-5xl text-center font-medium"
               />
             </Box>
@@ -87,7 +209,14 @@ const CreateGame: React.FC = () => {
                 icon={
                   <input
                     type="number"
-                    defaultValue={questions[currentQuestion].duration}
+                    onChange={(e) => {
+                      updateQuestion(
+                        currentQuestion,
+                        "duration_sec",
+                        e.target.value
+                      );
+                    }}
+                    defaultValue={currentQuestion.duration_sec}
                     className="w-full bg-inherit outline-none m-5 text-white text-center"
                   />
                 }
@@ -102,15 +231,15 @@ const CreateGame: React.FC = () => {
                 <AnswerItem
                   currentQuestion={currentQuestion}
                   index={0}
-                  question={questions[currentQuestion]}
-                  answerLabel="A."
+                  question={currentQuestion}
+                  answer="ans_A"
                   updateQuestion={updateQuestion}
                 />
                 <AnswerItem
                   currentQuestion={currentQuestion}
                   index={1}
-                  question={questions[currentQuestion]}
-                  answerLabel="B."
+                  question={currentQuestion}
+                  answer="ans_B"
                   updateQuestion={updateQuestion}
                 />
               </Flex>
@@ -118,15 +247,15 @@ const CreateGame: React.FC = () => {
                 <AnswerItem
                   currentQuestion={currentQuestion}
                   index={2}
-                  question={questions[currentQuestion]}
-                  answerLabel="C."
+                  question={currentQuestion}
+                  answer="ans_C"
                   updateQuestion={updateQuestion}
                 />
                 <AnswerItem
                   currentQuestion={currentQuestion}
                   index={3}
-                  question={questions[currentQuestion]}
-                  answerLabel="D."
+                  question={currentQuestion}
+                  answer="ans_D"
                   updateQuestion={updateQuestion}
                 />
               </Flex>
@@ -137,5 +266,29 @@ const CreateGame: React.FC = () => {
     </Box>
   );
 };
+
+function changeValue<K extends keyof Question, V extends Question[K]>(
+  obj: Question,
+  field: K,
+  v: V
+) {
+  const newObj = { ...obj };
+  newObj[field] = v;
+  return newObj;
+}
+
+function initEmptyQuestion() {
+  return {
+    question_id: uuidv4(),
+    game_id: "",
+    content: "",
+    ans_A: "",
+    ans_B: "",
+    ans_C: "",
+    ans_D: "",
+    correct_ans: "A",
+    duration_sec: 10,
+  };
+}
 
 export default CreateGame;

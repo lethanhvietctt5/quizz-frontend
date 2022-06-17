@@ -6,8 +6,17 @@ import HeaderMenuItem from "../components/HeaderMenuItem";
 
 import logo from "../assets/Logo.png";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "hooks";
+import { logout } from "redux/slices/auth";
 
 function Header() {
+  const auth = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  function handleLogout() {
+    dispatch(logout());
+  }
+
   return (
     <Box boxShadow="md" borderBottom="1px" borderColor="gray.100">
       <Flex
@@ -30,18 +39,24 @@ function Header() {
           </Flex>
         </Flex>
 
-        <Flex gap="4">
-          <Link to="/login">
-            <Button colorScheme="green" size="sm">
-              Login
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button colorScheme="teal" variant="outline" size="sm">
-              Register
-            </Button>
-          </Link>
-        </Flex>
+        {!auth.email ? (
+          <Flex gap="4">
+            <Link to="/login">
+              <Button colorScheme="green" size="sm">
+                Login
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button colorScheme="teal" variant="outline" size="sm">
+                Register
+              </Button>
+            </Link>
+          </Flex>
+        ) : (
+          <Button colorScheme="green" size="sm" onClick={handleLogout}>
+            Logout
+          </Button>
+        )}
       </Flex>
     </Box>
   );
