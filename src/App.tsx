@@ -5,8 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import store from "redux/store";
 import ProtectedRoute from "route/ProtectedRoute";
 import MainLayout from "./layouts";
-import CreateGame from "./pages/CreateGame";
-import HomePage from "./pages/HomePage";
+import CreateAndEditGame from "./pages/CreateAndEditGame";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -28,9 +27,9 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<MainLayout />}>
-                  <Route path="home" element={<HomePage />} />
                   <Route path="library" element={<Library />} />
-                  <Route path="create" element={<CreateGame />} />
+                  <Route path="create" element={<CreateAndEditGame />} />
+                  <Route path="edit/:game_id" element={<CreateAndEditGame />} />
                 </Route>
               </Route>
             </Routes>

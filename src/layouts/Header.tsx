@@ -35,9 +35,7 @@ function Header() {
           <Flex gap="16">
             <HeaderMenuItem Icon={VscLibrary} label="Library" />
             <HeaderMenuItem Icon={IoStatsChartOutline} label="Report" />
-            <Link to="/create">
-              <HeaderMenuItem Icon={IoCreateOutline} label="Create" />
-            </Link>
+            <HeaderMenuItem Icon={IoCreateOutline} label="Create" />
           </Flex>
         </Flex>
 

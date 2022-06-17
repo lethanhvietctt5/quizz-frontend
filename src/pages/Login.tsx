@@ -36,7 +36,7 @@ function Login() {
 
     if (res.status === 200) {
       dispatch(login(res.data));
-      navigate("/home");
+      navigate("/library");
       return;
     }
 

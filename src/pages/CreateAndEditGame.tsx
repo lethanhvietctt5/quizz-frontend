@@ -15,17 +15,48 @@ import { v4 as uuidv4 } from "uuid";
 import Game from "types/game";
 import api from "api";
 import { useAppSelector } from "hooks";
+import { useParams } from "react-router-dom";
 
-const CreateGame: React.FC = () => {
-  const [questions, setQuestions] = useState<Question[]>([initEmptyQuestion()]);
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(
-    questions[0]
-  );
+const CreateAndEditGame: React.FC = () => {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<Question>({
+    question_id: uuidv4(),
+    game_id: "",
+    content: "",
+    ans_A: "",
+    ans_B: "",
+    ans_C: "",
+    ans_D: "",
+    correct_ans: "",
+    duration_sec: 10,
+  });
   const [game, setGame] = useState<Game | null>(null);
   const gameNameRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLInputElement>(null);
   const auth = useAppSelector((state) => state.auth);
   const toast = useToast();
+  const { game_id } = useParams();
+
+  useEffect(() => {
+    async function fetchGame() {
+      const res = await api.get(`/game/${game_id}`);
+      if (res.status === 200) {
+        setGame(res.data);
+        const r = await api.get("/question/all_questions/" + game_id);
+        if (r.status === 200) {
+          setQuestions(r.data);
+          setCurrentQuestion(r.data[0]);
+        }
+      }
+    }
+    if (game_id) {
+      fetchGame();
+    } else {
+      let question = initEmptyQuestion();
+      setQuestions([question]);
+      setCurrentQuestion(question);
+    }
+  }, [game_id]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -201,6 +232,7 @@ const CreateGame: React.FC = () => {
             <Box w="full" px="4" mb="2">
               <Input
                 ref={gameNameRef}
+                defaultValue={game?.name}
                 w="full"
                 placeholder="Enter Game's name"
                 focusBorderColor="green.300"
@@ -360,4 +392,4 @@ function initEmptyQuestion() {
   };
 }
 
-export default CreateGame;
+export default CreateAndEditGame;
