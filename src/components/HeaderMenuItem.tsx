@@ -9,8 +9,8 @@ type Props = {
 function HeaderMenuItem({ Icon, label }: Props) {
   return (
     <Flex gap="1" color="gray.700" cursor="pointer" _hover={{ color: "green" }}>
-      <Icon size="20" />
-      <Text>{label}</Text>
+      <Icon size="25" />
+      <Text fontSize="larger">{label}</Text>
     </Flex>
   );
 }

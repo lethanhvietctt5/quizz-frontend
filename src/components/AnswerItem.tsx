@@ -8,6 +8,8 @@ type Props = {
   index: number;
   question: Question;
   answer: string;
+  correct_ans: string;
+  changeCorrectAns: (ans: string) => void;
   updateQuestion: (
     crt: Question,
     key: keyof Question,
@@ -20,7 +22,9 @@ function AnswerItem({
   index,
   question,
   answer,
+  correct_ans,
   updateQuestion,
+  changeCorrectAns,
 }: Props) {
   const ansRef = useRef<HTMLInputElement>(null);
 
@@ -58,10 +62,20 @@ function AnswerItem({
         }}
         className="w-full py-10 px-5 text-white bg-inherit rounded-md outline-none text-2xl"
       />
-      <Avatar
-        bg="white"
-        icon={<Icon as={CheckIcon} h="8" w="8" color="green" />}
-      />
+      {correct_ans.includes(answer[answer.length - 1]) ? (
+        <Avatar
+          bg="white"
+          icon={<Icon as={CheckIcon} h="8" w="8" color="green" />}
+          cursor="pointer"
+          onClick={() => changeCorrectAns(answer[answer.length - 1])}
+        />
+      ) : (
+        <Avatar
+          bg="white"
+          cursor="pointer"
+          onClick={() => changeCorrectAns(answer[answer.length - 1])}
+        />
+      )}
     </Flex>
   );
 }

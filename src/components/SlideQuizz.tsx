@@ -23,6 +23,11 @@ function SlideQuizz({
   const bgColor =
     currentQuestion.question_id === question.question_id ? "blue.100" : "white";
 
+  const cloneQues =
+    question.question_id === currentQuestion.question_id
+      ? currentQuestion
+      : question;
+
   return (
     <Flex w="full" px="4" py="2" backgroundColor={bgColor}>
       <Flex color="gray.600" direction="column" justify="center" gap="3" mr="2">
@@ -54,17 +59,42 @@ function SlideQuizz({
           <Flex justify="center">
             <Avatar
               bg="gray.200"
-              icon={<Text color="gray.400">{question.duration_sec}</Text>}
+              icon={
+                <Text
+                  maxW="full"
+                  maxH="full"
+                  overflow="hidden"
+                  color="gray.400"
+                >
+                  {cloneQues.duration_sec}
+                </Text>
+              }
             />
           </Flex>
           <Flex color="gray.400" direction="column" gap="1">
             <Flex w="full" gap="2">
-              <Box flex="1" h="3" border="1px" rounded="sm"></Box>
-              <Box flex="1" h="3" border="1px" rounded="sm"></Box>
+              <Box flex="1" h="3" border="1px" rounded="sm">
+                {cloneQues.correct_ans.includes("A") ? (
+                  <Box h="2" w="2" bg="green.400" rounded="full" />
+                ) : null}
+              </Box>
+              <Box flex="1" h="3" border="1px" rounded="sm">
+                {cloneQues.correct_ans.includes("B") ? (
+                  <Box h="2" w="2" bg="green.400" rounded="full" />
+                ) : null}
+              </Box>
             </Flex>
             <Flex w="full" gap="2">
-              <Box flex="1" h="3" border="1px" rounded="sm"></Box>
-              <Box flex="1" h="3" border="1px" rounded="sm"></Box>
+              <Box flex="1" h="3" border="1px" rounded="sm">
+                {cloneQues.correct_ans.includes("C") ? (
+                  <Box h="2" w="2" bg="green.400" rounded="full" />
+                ) : null}
+              </Box>
+              <Box flex="1" h="3" border="1px" rounded="sm">
+                {cloneQues.correct_ans.includes("D") ? (
+                  <Box h="2" w="2" bg="green.400" rounded="full" />
+                ) : null}
+              </Box>
             </Flex>
           </Flex>
         </Flex>

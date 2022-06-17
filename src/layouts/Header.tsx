@@ -30,7 +30,7 @@ function Header() {
       >
         <Flex align="center" gap="20">
           <Image h="12" src={logo} />
-          <Flex gap="10">
+          <Flex gap="16">
             <HeaderMenuItem Icon={VscLibrary} label="Library" />
             <HeaderMenuItem Icon={IoStatsChartOutline} label="Report" />
             <Link to="/create">

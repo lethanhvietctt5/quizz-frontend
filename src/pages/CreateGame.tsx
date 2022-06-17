@@ -99,6 +99,16 @@ const CreateGame: React.FC = () => {
     });
   }
 
+  function changeCorrectAnser(ans: string) {
+    if (currentQuestion.correct_ans.includes(ans)) {
+      let correctAns = currentQuestion.correct_ans.replace(ans, "");
+      setCurrentQuestion({ ...currentQuestion, correct_ans: correctAns });
+    } else {
+      let correctAns = currentQuestion.correct_ans + ans;
+      setCurrentQuestion({ ...currentQuestion, correct_ans: correctAns });
+    }
+  }
+
   async function saveGame() {
     if (gameNameRef.current && gameNameRef.current.value.length === 0) {
       toastError("Please enter game name.");
@@ -192,7 +202,7 @@ const CreateGame: React.FC = () => {
                   currentQuestion={currentQuestion}
                   duplicateQuestion={duplicateQuestion}
                   deleteQuestion={deleteQuestion}
-                  key={idx}
+                  key={question.question_id}
                   index={idx}
                   question={question}
                   setCurrentQuestion={setCurrentQuestion}
@@ -248,6 +258,8 @@ const CreateGame: React.FC = () => {
                 icon={
                   <input
                     type="number"
+                    min="5"
+                    max="20"
                     onChange={(e) => {
                       updateQuestion(
                         currentQuestion,
@@ -272,6 +284,8 @@ const CreateGame: React.FC = () => {
                   index={0}
                   question={currentQuestion}
                   answer="ans_A"
+                  changeCorrectAns={changeCorrectAnser}
+                  correct_ans={currentQuestion.correct_ans}
                   updateQuestion={updateQuestion}
                 />
                 <AnswerItem
@@ -279,6 +293,8 @@ const CreateGame: React.FC = () => {
                   index={1}
                   question={currentQuestion}
                   answer="ans_B"
+                  changeCorrectAns={changeCorrectAnser}
+                  correct_ans={currentQuestion.correct_ans}
                   updateQuestion={updateQuestion}
                 />
               </Flex>
@@ -288,6 +304,8 @@ const CreateGame: React.FC = () => {
                   index={2}
                   question={currentQuestion}
                   answer="ans_C"
+                  changeCorrectAns={changeCorrectAnser}
+                  correct_ans={currentQuestion.correct_ans}
                   updateQuestion={updateQuestion}
                 />
                 <AnswerItem
@@ -295,6 +313,8 @@ const CreateGame: React.FC = () => {
                   index={3}
                   question={currentQuestion}
                   answer="ans_D"
+                  changeCorrectAns={changeCorrectAnser}
+                  correct_ans={currentQuestion.correct_ans}
                   updateQuestion={updateQuestion}
                 />
               </Flex>
@@ -325,7 +345,7 @@ function initEmptyQuestion() {
     ans_B: "",
     ans_C: "",
     ans_D: "",
-    correct_ans: "A",
+    correct_ans: "",
     duration_sec: 10,
   };
 }
