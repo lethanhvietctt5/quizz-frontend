@@ -8,6 +8,9 @@ import MainLayout from "./layouts";
 import CreateAndEditGame from "./pages/CreateAndEditGame";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Game from "./pages/Game";
+import EnterGame from "./pages/EnterGame";
+import Play from "./pages/Play";
 
 const theme = extendTheme({
   fonts: {
@@ -31,7 +34,10 @@ function App() {
                   <Route path="create" element={<CreateAndEditGame />} />
                   <Route path="edit/:game_id" element={<CreateAndEditGame />} />
                 </Route>
+                <Route path="/play" element={<Play />} />
               </Route>
+              <Route path="/game" element={<EnterGame />} />
+              <Route path="/game/:game_id" element={<Game />} />
             </Routes>
           </div>
         </BrowserRouter>
