@@ -1,5 +1,6 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import Library from "pages/Library";
+import Report from "pages/Report";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import store from "redux/store";
@@ -7,7 +8,8 @@ import ProtectedRoute from "route/ProtectedRoute";
 import MainLayout from "./layouts";
 import CreateAndEditGame from "./pages/CreateAndEditGame";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Register from "./pages/Register"
+import ReportSummary from "./pages/ReportSummary";
 
 const theme = extendTheme({
   fonts: {
@@ -30,6 +32,8 @@ function App() {
                   <Route path="library" element={<Library />} />
                   <Route path="create" element={<CreateAndEditGame />} />
                   <Route path="edit/:game_id" element={<CreateAndEditGame />} />
+                  <Route path="report" element={<Report />} />
+                  <Route path="report/:report_id" element={<ReportSummary />} />
                 </Route>
               </Route>
             </Routes>
