@@ -1,6 +1,7 @@
 import {io, Socket} from "socket.io-client";
 import {Store} from "redux";
 import {reloadListPlayer} from "../redux/slices/game";
+import Questions from "../types/question";
 
 export default class SocketService {
     private socket?: Socket;
@@ -82,5 +83,10 @@ export default class SocketService {
     }
     startGame() {
         this.socket?.emit("start_game");
+    }
+    getQuestion(getListQuestion: (quests: Questions[]) => void) {
+        console.log("get questions");
+        this.socket?.on("questions", (quests: Questions[]) => getListQuestion(quests));
+
     }
 }

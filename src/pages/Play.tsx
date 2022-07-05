@@ -14,6 +14,9 @@ import {get} from 'lodash';
 import Report from "../types/report";
 import SocketService from "../socket/socket-service";
 import store from "../redux/store";
+import Questions from "../types/question";
+import Slide from "components/Slide";
+
 
 function Play() {
 
@@ -32,42 +35,52 @@ function Play() {
         navigate(-1)
     }
     const handleStart = () => {
-        socket.startGame()
+        socket.startGame();
+        console.log("d1");
+        socket.getQuestion(getListQuestion);
+
+    }
+
+    
+    const getListQuestion = (quests: Questions[]) => {
+        console.log("d2");
+        console.log(quests);
     }
 
     return (
-        <Box h='calc(100vh)'>
-            <Image src={BACKGROUND} boxSize='100%' pos="absolute"/>
-            <Flex h='calc(16vh)' flex={{base: 1}} align="center" pos="absolute" boxShadow="md" borderBottom="1px" borderColor="gray.100" w='100%'>
+        // <Box h='calc(100vh)'>
+        //     <Image src={BACKGROUND} boxSize='100%' pos="absolute"/>
+        //     <Flex h='calc(16vh)' flex={{base: 1}} align="center" pos="absolute" boxShadow="md" borderBottom="1px" borderColor="gray.100" w='100%'>
 
-                <Flex ml="30px" align="center" >
-                    <Image boxSize="40px" src={ICON_USER}/>
-                    <Text  color='teal' fontWeight='bold' fontSize='30'>
-                        {players.length}
-                    </Text>
-                </Flex>
-                <Flex  flex={{base: 1}} align="center" justify="center" >
-                    <Text  color='teal' fontWeight='bold' fontSize='40'>
-                        PIN: {report.pin_code}
-                    </Text>
-                </Flex>
-                <Button colorScheme='teal' variant='outline' mr='50px' onClick={handleStart}>
-                    Start
-                </Button>
-            </Flex>
-            <Flex mt='calc(16vh)' h='calc(84vh)' flex={{base: 1}} align="center" pos="absolute" w='100%'>
-                <Flex  flex='1' flexDirection='column' align="center" justify="center" >
-                    {players.map((item)=>{
-                        return <Text key={item.player_id} color='teal' fontWeight='bold' fontSize='32'>
-                            {item.name}
-                        </Text>
-                    })
-                    }
+        //         <Flex ml="30px" align="center" >
+        //             <Image boxSize="40px" src={ICON_USER}/>
+        //             <Text  color='teal' fontWeight='bold' fontSize='30'>
+        //                 {players.length}
+        //             </Text>
+        //         </Flex>
+        //         <Flex  flex={{base: 1}} align="center" justify="center" >
+        //             <Text  color='teal' fontWeight='bold' fontSize='40'>
+        //                 PIN: {report.pin_code}
+        //             </Text>
+        //         </Flex>
+        //         <Button colorScheme='teal' variant='outline' mr='50px' onClick={handleStart}>
+        //             Start
+        //         </Button>
+        //     </Flex>
+        //     <Flex mt='calc(16vh)' h='calc(84vh)' flex={{base: 1}} align="center" pos="absolute" w='100%'>
+        //         <Flex  flex='1' flexDirection='column' align="center" justify="center" >
+        //             {players.map((item)=>{
+        //                 return <Text key={item.player_id} color='teal' fontWeight='bold' fontSize='32'>
+        //                     {item.name}
+        //                 </Text>
+        //             })
+        //             }
 
-                </Flex>
-            </Flex>
+        //         </Flex>
+        //     </Flex>
 
-        </Box>
+        // </Box>
+        <Slide />
     );
 }
 
