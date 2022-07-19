@@ -3,7 +3,7 @@ type Report = {
   game_id: string;
   pin_code: string;
   status: number;
-    started_at: Date;
+  started_at: string;
   name: string;
   author_id: string;
   created_at: string;

@@ -1,16 +1,16 @@
-import { Box, Button, Flex, Image } from "@chakra-ui/react";
-import React from "react";
-import { VscLibrary } from "react-icons/vsc";
-import { IoStatsChartOutline, IoCreateOutline } from "react-icons/io5";
-import HeaderMenuItem from "../components/HeaderMenuItem";
+import { Box, Button, Flex, Image } from '@chakra-ui/react';
+import React from 'react';
+import { VscLibrary } from 'react-icons/vsc';
+import { IoStatsChartOutline, IoCreateOutline } from 'react-icons/io5';
+import HeaderMenuItem from '../components/HeaderMenuItem';
 
-import logo from "../assets/Logo.png";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "hooks";
-import { logout } from "redux/slices/auth";
+import logo from '../assets/Logo.png';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { logout } from 'redux/slices/auth';
 
 function Header() {
-  const auth = useAppSelector((state) => state.auth);
+  const auth = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
   function handleLogout() {
@@ -19,15 +19,7 @@ function Header() {
 
   return (
     <Box boxShadow="md" borderBottom="1px" borderColor="gray.100">
-      <Flex
-        w="80%"
-        mx="auto"
-        align="center"
-        justify="space-between"
-        fontWeight="bold"
-        letterSpacing="tight"
-        py="1"
-      >
+      <Flex w="80%" mx="auto" align="center" justify="space-between" fontWeight="bold" letterSpacing="tight" py="1">
         <Flex align="center" gap="20">
           <Link to="/home">
             <Image h="12" src={logo} />

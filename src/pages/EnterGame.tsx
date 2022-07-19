@@ -1,104 +1,66 @@
-import {Button, Center, Image, Input, Text, useToast} from "@chakra-ui/react";
-import {useAppDispatch} from "hooks";
-import React, {useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import logo from "../assets/Logo.png";
-import SocketService from "../socket/socket-service";
-import store from "../redux/store";
+import { Button, Image, Input } from '@chakra-ui/react';
+import api from 'api';
+import { useCustomToast } from 'hooks/useCustomToast';
+import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import socket from 'socket/socket-service';
+import logo from '../assets/Logo.png';
 
-function EnterGame() {
+function Game() {
+  const gamePinRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const { toastError } = useCustomToast();
+  const navigate = useNavigate();
 
-    const gamePinRef = useRef<HTMLInputElement>(null);
-    const nameRef = useRef<HTMLInputElement>(null);
+  async function handleEnterGame() {
+    const game = gamePinRef.current?.value;
+    const name = nameRef.current?.value;
 
-    const toast = useToast();
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const [isPin, setIsPin] = useState<boolean>(true)
-    const [isWaiting, setIsWaiting] = useState<boolean>(false)
-
-    async function handleEnterGame() {
-        let game = gamePinRef.current?.value;
-
-        if (!game) {
-            toast({
-                title: "Enter game failed.",
-                description: "Game pin is required",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-                position: "top",
-            });
-            return;
-        }
-        SocketService.instance(store).userConnect(game, () => {
-                setIsPin(false)
-                console.log("lva")
-            },
-            () => {
-                setIsWaiting(true)
-            })
-
+    if (!game) {
+      toastError('Game pin is required');
+      return;
     }
 
-    async function handleEnterName() {
-        let name = nameRef.current?.value;
-
-        if (!name) {
-            toast({
-                title: "Enter game failed.",
-                description: "Name is required",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-                position: "top",
-            });
-            return;
-        }
-        SocketService.instance(store).enterName(name)
-
+    if (!name) {
+      toastError('Name is required');
+      return;
     }
 
-    return (
-        <div className="w-full h-screen flex justify-center bg-gray-200">
-            <div className="w-1/3 flex flex-col items-center justify-center space-y-12 bg-white my-20 rounded-3xl">
-                <div>
-                    <Image h="100" src={logo}/>
-                </div>
-                {!isWaiting&&<div className="w-full px-20 flex flex-col space-y-6">
-                    <div>
-                        {isPin && <Input
-                            ref={gamePinRef}
-                            type="text"
-                            placeholder={"Game pin"}
-                            focusBorderColor="green.300"
-                        />}
-                        {!isPin && <Input
-                            ref={nameRef}
-                            type="text"
-                            placeholder={"Name"}
-                            focusBorderColor="green.300"
-                        />}
-                    </div>
-                    <Button
-                        backgroundColor="green.600"
-                        colorScheme="green"
-                        color="white"
-                        size="md"
-                        onClick={isPin ? handleEnterGame : handleEnterName}
-                    >
-                        Enter
-                    </Button>
-                </div>}
-                {isWaiting&&<div className="w-full px-20 flex flex-col space-y-6">
-                    <Center color='teal' fontWeight='bold' fontSize='28'  >
-                        Waiting...
-                    </Center>
-                </div>}
+    const res = await api.get(`/report/reportByPin/${game}`);
+    if (res.status === 200) {
+      socket.emit('join_game', { report_id: res.data.report_id, name: name });
 
-            </div>
+      navigate(`/waiting/${res.data.report_id}`, {
+        state: {
+          report: res.data,
+        },
+      });
+    }
+  }
+
+  return (
+    <div className="w-full h-screen flex justify-center bg-gray-200">
+      <div className="w-1/3 flex flex-col items-center justify-center space-y-12 bg-white my-20 rounded-3xl">
+        <div>
+          <Image h="100" src={logo} />
         </div>
-    );
+        <div className="w-full px-20 flex flex-col space-y-6">
+          <div>
+            <Input ref={gamePinRef} type="text" placeholder="Game pin" focusBorderColor="green.300" />
+          </div>
+          <div>
+            <Input ref={nameRef} type="text" placeholder="Enter name" focusBorderColor="green.300" />
+          </div>
+          <Button backgroundColor="green.600" colorScheme="green" color="white" size="md" onClick={handleEnterGame}>
+            Enter
+          </Button>
+          <Button variant="outline" colorScheme="green" size="md" onClick={() => navigate('/login')}>
+            Login
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default EnterGame;
+export default Game;

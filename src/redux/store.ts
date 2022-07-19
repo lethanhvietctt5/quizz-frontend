@@ -1,6 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/auth";
-import gameReducer from "./slices/game";
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/auth';
+import gameReducer from './slices/game';
 
 const store = configureStore({
   reducer: {
@@ -8,7 +8,7 @@ const store = configureStore({
     game: gameReducer,
   },
 
-  devTools: process.env.NODE_ENV !== "production",
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 export type RootState = ReturnType<typeof store.getState>;

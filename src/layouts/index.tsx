@@ -1,7 +1,7 @@
-import { Box, Flex } from "@chakra-ui/react";
-import React from "react";
-import { Outlet } from "react-router-dom";
-import Header from "./Header";
+import { Box, Flex } from '@chakra-ui/react';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from './Header';
 
 function MainLayout() {
   return (

@@ -1,7 +1,7 @@
-import { Button, Input, useToast } from "@chakra-ui/react";
-import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../api";
+import { Button, Input, useToast } from '@chakra-ui/react';
+import { useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api';
 
 function Register() {
   const fullnameRef = useRef<HTMLInputElement>(null);
@@ -20,29 +20,29 @@ function Register() {
 
     if (!fullname || !email || !password || !repassword) {
       toast({
-        title: "Register failed.",
-        description: "Please enter all field.",
-        status: "error",
+        title: 'Register failed.',
+        description: 'Please enter all field.',
+        status: 'error',
         duration: 3000,
         isClosable: true,
-        position: "top",
+        position: 'top',
       });
       return;
     }
 
     if (password !== repassword) {
       toast({
-        title: "Register failed.",
-        description: "Password is not match.",
-        status: "error",
+        title: 'Register failed.',
+        description: 'Password is not match.',
+        status: 'error',
         duration: 3000,
         isClosable: true,
-        position: "top",
+        position: 'top',
       });
       return;
     }
 
-    const res = await api.post("/register", {
+    const res = await api.post('/register', {
       email: email,
       password: password,
       name: fullname,
@@ -50,25 +50,25 @@ function Register() {
 
     if (res.status === 200) {
       toast({
-        title: "Register successful.",
-        description: "Let login to new account.",
-        status: "success",
+        title: 'Register successful.',
+        description: 'Let login to new account.',
+        status: 'success',
         duration: 3000,
         isClosable: true,
-        position: "top",
+        position: 'top',
       });
 
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
     toast({
-      title: "Register failed.",
-      description: "Something was wrong.",
-      status: "error",
+      title: 'Register failed.',
+      description: 'Something was wrong.',
+      status: 'error',
       duration: 3000,
       isClosable: true,
-      position: "top",
+      position: 'top',
     });
   }
 
@@ -79,57 +79,34 @@ function Register() {
         <div className="w-full px-20 flex flex-col space-y-6">
           <div>
             <div className="font-black">Full-name</div>
-            <Input
-              ref={fullnameRef}
-              type="text"
-              placeholder="Enter name"
-              focusBorderColor="green.300"
-            />
+            <Input ref={fullnameRef} type="text" placeholder="Enter name" focusBorderColor="green.300" />
           </div>
           <div>
             <div className="font-black">Email</div>
-            <Input
-              ref={emailRef}
-              type="email"
-              placeholder="Enter email"
-              focusBorderColor="green.300"
-            />
+            <Input ref={emailRef} type="email" placeholder="Enter email" focusBorderColor="green.300" />
           </div>
           <div>
             <div className="font-black">Password</div>
-            <Input
-              ref={passwordRef}
-              type={"password"}
-              placeholder="Enter password"
-              focusBorderColor="green.300"
-            />
+            <Input ref={passwordRef} type={'password'} placeholder="Enter password" focusBorderColor="green.300" />
           </div>
           <div>
             <div className="font-black">Re-password</div>
             <Input
               ref={repasswordRef}
-              type={"password"}
+              type={'password'}
               placeholder="Enter password again"
               focusBorderColor="green.300"
             />
           </div>
 
-          <Button
-            backgroundColor="green.600"
-            colorScheme="green"
-            color="white"
-            size="md"
-            onClick={handleRegiser}
-          >
+          <Button backgroundColor="green.600" colorScheme="green" color="white" size="md" onClick={handleRegiser}>
             Register
           </Button>
         </div>
         <div className="text-sm text-center">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link to="/login">
-            <span className="font-bold text-green-500 cursor-pointer">
-              Login
-            </span>
+            <span className="font-bold text-green-500 cursor-pointer">Login</span>
           </Link>
         </div>
       </div>

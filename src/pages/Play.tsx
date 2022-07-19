@@ -1,92 +1,103 @@
-import {
-    Box,
-    Button, Center, Flex,
-    Image,
-    Text,
-    useToast
-} from "@chakra-ui/react";
-import {useAppDispatch, useAppSelector} from "hooks";
-import React, {useEffect, useRef, useState} from "react";
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
-import BACKGROUND from "../assets/img_bacground.webp";
-import ICON_USER from "../assets/icon_user.png";
-import {get} from 'lodash';
-import Report from "../types/report";
-import SocketService from "../socket/socket-service";
-import store from "../redux/store";
-import Questions from "../types/question";
-import Slide from "components/Slide";
+import { Avatar } from '@chakra-ui/react';
+import AnswerSelector from 'components/AnswerSelector';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { canInc, setAns } from 'redux/slices/game';
+import socket from 'socket/socket-service';
 
+const Play = () => {
+  const game = useAppSelector(state => state.game);
+  const question = game.questions[game.currentQuestion];
+  const [answer, setAnswer] = useState<string>('');
+  const [countTime, setCountTime] = useState<number>(question.duration_sec);
+  const [selectTime, setSelectTime] = useState<number>(countTime);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-function Play() {
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountTime(old => {
+        if (old > 0) return old - 1;
+        return old;
+      });
+    }, 1000);
 
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const {state} = useLocation();
-    const socket = SocketService.instance(store);
-    const players = useAppSelector((state) => state.game.listPlayer);
+    return () => clearInterval(timer);
+  }, []);
 
-    console.log(players)
-    let report: Report = get(state, "report", undefined)
-    if (!!report) {
-        console.log(report)
-        socket.hostConnect(report.pin_code)
-    } else {
-        navigate(-1)
+  useEffect(() => {
+    if (countTime === 0) {
+      if (!game.isHost) {
+        socket.emit('answer', {
+          report_id: game.reportId,
+          question_id: question.question_id,
+          answer: answer,
+          count_time: selectTime,
+        });
+        dispatch(setAns(answer));
+      }
+
+      dispatch(canInc());
+      navigate('/afterQuestion');
     }
-    const handleStart = () => {
-        socket.startGame();
-        console.log("d1");
-        socket.getQuestion(getListQuestion);
+  }, [answer, game.isHost, game.reportId, countTime, selectTime, question]);
 
-    }
+  function handleSelect(ans: string) {
+    setAnswer(ans);
+    setSelectTime(countTime);
+  }
 
-    
-    const getListQuestion = (quests: Questions[]) => {
-        console.log("d2");
-        console.log(quests);
-    }
+  return (
+    <div className="bg-gray-200">
+      <div className="min-h-screen flex flex-col justify-between items-center px-4 pt-4">
+        <div className="w-full py-3 bg-white rounded-md outline-none px-10 text-5xl text-center font-medium">
+          {question.content}
+        </div>
 
-    return (
-        // <Box h='calc(100vh)'>
-        //     <Image src={BACKGROUND} boxSize='100%' pos="absolute"/>
-        //     <Flex h='calc(16vh)' flex={{base: 1}} align="center" pos="absolute" boxShadow="md" borderBottom="1px" borderColor="gray.100" w='100%'>
+        <Avatar
+          bg="gray.400"
+          size="2xl"
+          icon={<div className="w-full bg-inherit outline-none m-5 text-white text-center">{countTime}</div>}
+        />
 
-        //         <Flex ml="30px" align="center" >
-        //             <Image boxSize="40px" src={ICON_USER}/>
-        //             <Text  color='teal' fontWeight='bold' fontSize='30'>
-        //                 {players.length}
-        //             </Text>
-        //         </Flex>
-        //         <Flex  flex={{base: 1}} align="center" justify="center" >
-        //             <Text  color='teal' fontWeight='bold' fontSize='40'>
-        //                 PIN: {report.pin_code}
-        //             </Text>
-        //         </Flex>
-        //         <Button colorScheme='teal' variant='outline' mr='50px' onClick={handleStart}>
-        //             Start
-        //         </Button>
-        //     </Flex>
-        //     <Flex mt='calc(16vh)' h='calc(84vh)' flex={{base: 1}} align="center" pos="absolute" w='100%'>
-        //         <Flex  flex='1' flexDirection='column' align="center" justify="center" >
-        //             {players.map((item)=>{
-        //                 return <Text key={item.player_id} color='teal' fontWeight='bold' fontSize='32'>
-        //                     {item.name}
-        //                 </Text>
-        //             })
-        //             }
+        <div className="w-full">
+          <div className="flex space-x-4 mb-4">
+            <AnswerSelector
+              index={0}
+              question={question}
+              answer="ans_A"
+              selectedAns={answer}
+              handleSelect={handleSelect}
+            />
+            <AnswerSelector
+              index={1}
+              question={question}
+              answer="ans_B"
+              selectedAns={answer}
+              handleSelect={handleSelect}
+            />
+          </div>
+          <div className="flex space-x-4 mb-4">
+            <AnswerSelector
+              index={2}
+              question={question}
+              answer="ans_C"
+              selectedAns={answer}
+              handleSelect={handleSelect}
+            />
+            <AnswerSelector
+              index={3}
+              question={question}
+              answer="ans_D"
+              selectedAns={answer}
+              handleSelect={handleSelect}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-        //         </Flex>
-        //     </Flex>
-
-        // </Box>
-        <Slide />
-    );
-}
-
-// style={{
-//     height: '100%',
-//         width: '100%',
-//         position: 'absolute',
-// }}
 export default Play;

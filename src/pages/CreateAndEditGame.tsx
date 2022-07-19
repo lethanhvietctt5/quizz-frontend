@@ -1,39 +1,31 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  Input,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-import AnswerItem from "../components/AnswerItem";
-import SlideQuizz from "../components/SlideQuizz";
-import Question from "../types/question";
-import { v4 as uuidv4 } from "uuid";
-import Game from "types/game";
-import api from "api";
-import { useAppSelector } from "hooks";
-import { useParams } from "react-router-dom";
+import { Avatar, Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
+import AnswerItem from '../components/AnswerItem';
+import SlideQuizz from '../components/SlideQuizz';
+import Question from '../types/question';
+import { v4 as uuidv4 } from 'uuid';
+import Game from 'types/game';
+import api from 'api';
+import { useAppSelector } from 'hooks';
+import { useParams } from 'react-router-dom';
 
 const CreateAndEditGame: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question>({
     question_id: uuidv4(),
-    game_id: "",
-    content: "",
-    ans_A: "",
-    ans_B: "",
-    ans_C: "",
-    ans_D: "",
-    correct_ans: "",
+    game_id: '',
+    content: '',
+    ans_A: '',
+    ans_B: '',
+    ans_C: '',
+    ans_D: '',
+    correct_ans: '',
     duration_sec: 10,
   });
   const [game, setGame] = useState<Game | null>(null);
   const gameNameRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLInputElement>(null);
-  const auth = useAppSelector((state) => state.auth);
+  const auth = useAppSelector(state => state.auth);
   const toast = useToast();
   const { game_id } = useParams();
 
@@ -42,7 +34,7 @@ const CreateAndEditGame: React.FC = () => {
       const res = await api.get(`/game/${game_id}`);
       if (res.status === 200) {
         setGame(res.data);
-        const r = await api.get("/question/all_questions/" + game_id);
+        const r = await api.get('/question/all_questions/' + game_id);
         if (r.status === 200) {
           setQuestions(r.data);
           setCurrentQuestion(r.data[0]);
@@ -64,11 +56,7 @@ const CreateAndEditGame: React.FC = () => {
     }
   }, [currentQuestion]);
 
-  function updateQuestion(
-    crtQues: Question,
-    key: keyof Question,
-    value: string | number
-  ) {
+  function updateQuestion(crtQues: Question, key: keyof Question, value: string | number) {
     let updatedQues = changeValue(crtQues, key, value);
     setCurrentQuestion(updatedQues);
 
@@ -85,11 +73,9 @@ const CreateAndEditGame: React.FC = () => {
 
   function duplicateQuestion() {
     let newQuestions: Question[] = [];
-    questions.forEach((question) => {
+    questions.forEach(question => {
       if (question.question_id === currentQuestion.question_id) {
-        newQuestions.push(
-          Object.assign({}, { ...question, question_id: uuidv4() })
-        );
+        newQuestions.push(Object.assign({}, { ...question, question_id: uuidv4() }));
       }
       newQuestions.push(Object.assign({}, { ...question }));
     });
@@ -97,15 +83,17 @@ const CreateAndEditGame: React.FC = () => {
     setQuestions([...newQuestions]);
   }
 
-  function deleteQuestion(question_id: string) {
+  async function deleteQuestion(question_id: string) {
     if (questions.length <= 1) {
-      toastError("You must have at least one question");
+      toastError('You must have at least one question');
       return;
     }
 
-    let idx: number = questions.findIndex((question) => {
+    let idx: number = questions.findIndex(question => {
       return question.question_id === question_id;
     });
+
+    await api.delete(`/question/${questions[idx].question_id}`);
 
     if (idx === 0) {
       setCurrentQuestion(Object.assign({}, questions[0]));
@@ -113,7 +101,7 @@ const CreateAndEditGame: React.FC = () => {
       setCurrentQuestion(Object.assign({}, questions[idx - 1]));
     }
 
-    let newQuestions: Question[] = questions.filter((question) => {
+    let newQuestions: Question[] = questions.filter(question => {
       return question.question_id !== question_id;
     });
 
@@ -123,24 +111,24 @@ const CreateAndEditGame: React.FC = () => {
   function toastError(message: string) {
     toast({
       title: message,
-      status: "error",
+      status: 'error',
       duration: 3000,
       isClosable: true,
-      position: "top",
+      position: 'top',
     });
   }
 
   function changeCorrectAnser(ans: string) {
     let correctAns: string;
     if (currentQuestion.correct_ans.includes(ans)) {
-      correctAns = currentQuestion.correct_ans.replace(ans, "");
+      correctAns = currentQuestion.correct_ans.replace(ans, '');
       setCurrentQuestion({ ...currentQuestion, correct_ans: correctAns });
     } else {
       correctAns = currentQuestion.correct_ans + ans;
       setCurrentQuestion({ ...currentQuestion, correct_ans: correctAns });
     }
 
-    let newQuestions = questions.map((question) => {
+    let newQuestions = questions.map(question => {
       if (question.question_id === currentQuestion.question_id) {
         return { ...question, correct_ans: correctAns };
       }
@@ -152,13 +140,13 @@ const CreateAndEditGame: React.FC = () => {
 
   async function saveGame() {
     if (gameNameRef.current && gameNameRef.current.value.length === 0) {
-      toastError("Please enter game name.");
+      toastError('Please enter game name.');
       return;
     }
 
     for (let question of questions) {
       if (question.content.length === 0) {
-        toastError("Please enter question content for all question.");
+        toastError('Please enter question content for all question.');
         return;
       }
 
@@ -168,24 +156,24 @@ const CreateAndEditGame: React.FC = () => {
         question.ans_C.length === 0 ||
         question.ans_D.length === 0
       ) {
-        toastError("Please enter 4 answer for all question.");
+        toastError('Please enter 4 answer for all question.');
         return;
       }
 
       if (question.correct_ans.length === 0) {
-        toastError("Please select correct answer for all question.");
+        toastError('Please select correct answer for all question.');
         return;
       }
 
       if (!question.duration_sec) {
-        toastError("Invalid duration time.");
+        toastError('Invalid duration time.');
         return;
       }
     }
 
     let gameObj: Game | null = game;
     if (game == null) {
-      const res = await api.post("/game", {
+      const res = await api.post('/game', {
         name: gameNameRef.current?.value,
         author_id: auth.user_id,
       });
@@ -193,7 +181,7 @@ const CreateAndEditGame: React.FC = () => {
       if (res.status === 200) gameObj = res.data;
     } else {
       if (gameNameRef.current) {
-        const res = await api.patch("/game/" + game.game_id, {
+        const res = await api.patch('/game/' + game.game_id, {
           name: gameNameRef.current.value,
         });
 
@@ -204,22 +192,22 @@ const CreateAndEditGame: React.FC = () => {
     if (gameObj) {
       setGame(gameObj);
       for await (let question of questions) {
-        const res = await api.post("/question", {
+        const res = await api.post('/question', {
           ...question,
           game_id: gameObj.game_id,
         });
         if (res.status !== 200) {
-          toastError("Create game failed.");
+          toastError('Create game failed.');
           break;
         }
       }
 
       toast({
-        title: "Game has saved successful.",
-        status: "success",
+        title: 'Game has saved successful.',
+        status: 'success',
         duration: 3000,
         isClosable: true,
-        position: "top",
+        position: 'top',
       });
     }
   }
@@ -252,41 +240,22 @@ const CreateAndEditGame: React.FC = () => {
               ))}
             </Flex>
 
-            <Button
-              mx="5"
-              colorScheme="green"
-              size="sm"
-              variant="outline"
-              onClick={addQuestion}
-            >
+            <Button mx="5" colorScheme="green" size="sm" variant="outline" onClick={addQuestion}>
               Add slide
             </Button>
-            <Button
-              mx="5"
-              mt="2"
-              colorScheme="green"
-              size="sm"
-              onClick={saveGame}
-            >
+            <Button mx="5" mt="2" colorScheme="green" size="sm" onClick={saveGame}>
               Save
             </Button>
           </Flex>
         </Box>
         <Box flexGrow="1" backgroundColor="gray.200">
-          <Flex
-            h="full"
-            direction="column"
-            justify="space-between"
-            align="center"
-            py="4"
-            px="8"
-          >
+          <Flex h="full" direction="column" justify="space-between" align="center" py="4" px="8">
             <Box w="full" boxShadow="md" mt="10">
               <input
                 type="text"
                 ref={contentRef}
-                onChange={(e) => {
-                  updateQuestion(currentQuestion, "content", e.target.value);
+                onChange={e => {
+                  updateQuestion(currentQuestion, 'content', e.target.value);
                 }}
                 defaultValue={currentQuestion.content}
                 className="w-full py-3 rounded-md outline-none px-10 text-5xl text-center font-medium"
@@ -302,12 +271,8 @@ const CreateAndEditGame: React.FC = () => {
                     type="number"
                     min="5"
                     max="20"
-                    onChange={(e) => {
-                      updateQuestion(
-                        currentQuestion,
-                        "duration_sec",
-                        e.target.value
-                      );
+                    onChange={e => {
+                      updateQuestion(currentQuestion, 'duration_sec', e.target.value);
                     }}
                     defaultValue={currentQuestion.duration_sec}
                     className="w-full bg-inherit outline-none m-5 text-white text-center"
@@ -368,11 +333,7 @@ const CreateAndEditGame: React.FC = () => {
   );
 };
 
-function changeValue<K extends keyof Question, V extends Question[K]>(
-  obj: Question,
-  field: K,
-  v: V
-) {
+function changeValue<K extends keyof Question, V extends Question[K]>(obj: Question, field: K, v: V) {
   const newObj = { ...obj };
   newObj[field] = v;
   return newObj;
@@ -381,13 +342,13 @@ function changeValue<K extends keyof Question, V extends Question[K]>(
 function initEmptyQuestion() {
   return {
     question_id: uuidv4(),
-    game_id: "",
-    content: "",
-    ans_A: "",
-    ans_B: "",
-    ans_C: "",
-    ans_D: "",
-    correct_ans: "",
+    game_id: '',
+    content: '',
+    ans_A: '',
+    ans_B: '',
+    ans_C: '',
+    ans_D: '',
+    correct_ans: '',
     duration_sec: 10,
   };
 }
