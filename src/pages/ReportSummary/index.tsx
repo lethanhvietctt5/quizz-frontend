@@ -30,9 +30,9 @@ import { ImClock, ImQuestion, ImUser } from 'react-icons/im';
 import ReportModel from 'types/report';
 import api from 'api';
 import { useParams } from 'react-router-dom';
-import DonutChart from 'components/DonutChart';
-import TabPlayer from 'components/TabPlayer';
-import TabQuestion from 'components/TabQuestion';
+import DonutChart from 'pages/ReportSummary/components/DonutChart';
+import TabPlayer from 'pages/ReportSummary/components/TabPlayer';
+import TabQuestion from 'pages/ReportSummary/components/TabQuestion';
 
 dayjs.extend(localizedFormat);
 

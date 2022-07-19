@@ -23,7 +23,6 @@ const WaitingRoom = () => {
 
   useEffect(() => {
     socket.on('play', () => {
-      console.log('Hello');
       navigate('/play');
     });
   }, [socket]);

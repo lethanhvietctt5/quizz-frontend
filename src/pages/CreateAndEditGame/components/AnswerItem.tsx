@@ -1,7 +1,7 @@
 import { CheckIcon } from '@chakra-ui/icons';
 import { Avatar, Flex, Icon, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef } from 'react';
-import Question from '../types/question';
+import Question from '../../../types/question';
 
 type Props = {
   currentQuestion: Question;

@@ -1,7 +1,7 @@
 import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import api from 'api';
 import { useEffect, useState } from 'react';
-import Questions from '../types/question';
+import Questions from '../../../types/question';
 
 type Props = {
   game_id: string;

@@ -1,7 +1,7 @@
 import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import { HiOutlineDocumentDuplicate } from 'react-icons/hi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import Question from '../types/question';
+import Question from 'types/question';
 
 type Props = {
   index: number;

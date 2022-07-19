@@ -2,9 +2,9 @@ import { Box, Button, Flex, Image } from '@chakra-ui/react';
 import React from 'react';
 import { VscLibrary } from 'react-icons/vsc';
 import { IoStatsChartOutline, IoCreateOutline } from 'react-icons/io5';
-import HeaderMenuItem from '../components/HeaderMenuItem';
+import HeaderMenuItem from './components/HeaderMenuItem';
 
-import logo from '../assets/Logo.png';
+import logo from 'assets/Logo.png';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { logout } from 'redux/slices/auth';

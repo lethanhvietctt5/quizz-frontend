@@ -1,7 +1,7 @@
 import { Button, Input, useToast } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../api';
+import api from '../../api';
 
 function Register() {
   const fullnameRef = useRef<HTMLInputElement>(null);

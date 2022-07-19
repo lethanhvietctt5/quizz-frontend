@@ -4,7 +4,7 @@ import { useCustomToast } from 'hooks/useCustomToast';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from 'socket/socket-service';
-import logo from '../assets/Logo.png';
+import logo from 'assets/Logo.png';
 
 function Game() {
   const gamePinRef = useRef<HTMLInputElement>(null);

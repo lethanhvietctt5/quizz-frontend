@@ -26,7 +26,7 @@ import api from 'api';
 import { useAppSelector } from 'hooks';
 import { Link } from 'react-router-dom';
 import { VscKebabVertical } from 'react-icons/vsc';
-import ExportExcel from '../components/ExportExcel';
+import ExportExcel from './components/ExportExcel';
 
 dayjs.extend(localizedFormat);
 

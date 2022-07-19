@@ -1,5 +1,5 @@
 import { Avatar } from '@chakra-ui/react';
-import AnswerSelector from 'components/AnswerSelector';
+import AnswerSelector from 'pages/Play/components/AnswerSelector';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

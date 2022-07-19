@@ -3,7 +3,7 @@ import { useAppDispatch } from 'hooks';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from 'redux/slices/auth';
-import api from '../api';
+import api from '../../api';
 
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);

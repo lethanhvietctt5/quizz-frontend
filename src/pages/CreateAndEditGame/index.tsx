@@ -1,13 +1,13 @@
 import { Avatar, Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
-import AnswerItem from '../components/AnswerItem';
-import SlideQuizz from '../components/SlideQuizz';
-import Question from '../types/question';
+import AnswerItem from './components/AnswerItem';
+import Question from '../../types/question';
 import { v4 as uuidv4 } from 'uuid';
 import Game from 'types/game';
 import api from 'api';
 import { useAppSelector } from 'hooks';
 import { useParams } from 'react-router-dom';
+import SlideQuizz from './components/SlideQuizz';
 
 const CreateAndEditGame: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
