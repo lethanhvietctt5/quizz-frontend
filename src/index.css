@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.donutchart-track {
+  fill: transparent;
+  stroke: #dae2e5;
+  stroke-width: 26;
+}
+.donutchart-indicator {
+  fill: transparent;
+  stroke: #009688;
+  stroke-width: 26;
+  stroke-dasharray: 0 10000;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.donutchart {
+  margin: 0 auto;
+  border-radius: 50%;
+  display: block;
+}
+
+.donutchart-text {
+  font-family: 'Roboto';
+  fill: #607580;
+}
+.donutchart-text-val {
+  font-size: 22px;
+}
+.donutchart-text-percent {
+  font-size: 14px;
+}
+.donutchart-text-label {
+  font-size: 9px;
+}
