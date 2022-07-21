@@ -16,6 +16,12 @@ const Play = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    socket.on('end_game', () => {
+      navigate('/', { replace: true });
+    });
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setCountTime(old => {
         if (old > 0) return old - 1;

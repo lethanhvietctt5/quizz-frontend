@@ -2,7 +2,7 @@ import { Box, Table, TableContainer, Tbody, Td, Thead, Tr } from '@chakra-ui/rea
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { nextQuesion, resetGame, setListPlayers } from 'redux/slices/game';
+import { nextQuesion, removePlayer, resetGame, setListPlayers } from 'redux/slices/game';
 import socket from 'socket/socket-service';
 import Player from 'types/player';
 
@@ -26,6 +26,16 @@ const AfterQuestion = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    socket.on('end_game', () => {
+      navigate('/', { replace: true });
+    });
+
+    socket.on('player_leave', (player_id: string) => {
+      dispatch(removePlayer(player_id));
+    });
+  }, []);
+
+  useEffect(() => {
     for (let i = 0; i < game.players.length; i++) {
       if (game.players[i].player_id === socket.id) {
         setRank(i + 1);
@@ -44,8 +54,14 @@ const AfterQuestion = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (game.currentQuestion === game.questions.length - 1) {
+      socket.emit('end_game', game.reportId);
+    }
+  }, [game.reportId, game.questions, game.currentQuestion]);
+
   if (!game.isHost && game.currentQuestion < game.questions.length - 1) {
-    if (game.questions[game.currentQuestion].correct_ans.includes(game.currentAns)) {
+    if (game.currentAns.length > 0 && game.questions[game.currentQuestion].correct_ans.includes(game.currentAns)) {
       return (
         <div className="w-full h-screen flex justify-center items-center bg-green-500">
           <div>

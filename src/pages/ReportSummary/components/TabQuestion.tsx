@@ -12,7 +12,7 @@ function TabQuestion({ game_id }: Props) {
 
   useEffect(() => {
     async function fetchReports() {
-      const res = await api.get('/report/list_questions/' + game_id);
+      const res = await api.get(`/game/${game_id}/questions`);
       if (res.status === 200) {
         setQuestions(res.data);
       }

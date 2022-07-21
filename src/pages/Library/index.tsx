@@ -19,7 +19,7 @@ function Library() {
 
   useEffect(() => {
     async function fetchAllGames() {
-      const res = await api.get('/game/all_games/' + auth.user_id);
+      const res = await api.get(`/user/${auth.user_id}/games`);
 
       if (res.status === 200) {
         setGames(res.data);

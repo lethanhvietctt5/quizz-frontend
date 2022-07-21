@@ -34,7 +34,7 @@ const CreateAndEditGame: React.FC = () => {
       const res = await api.get(`/game/${game_id}`);
       if (res.status === 200) {
         setGame(res.data);
-        const r = await api.get('/question/all_questions/' + game_id);
+        const r = await api.get(`/game/${game_id}/questions`);
         if (r.status === 200) {
           setQuestions(r.data);
           setCurrentQuestion(r.data[0]);

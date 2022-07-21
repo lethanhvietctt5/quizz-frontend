@@ -15,13 +15,16 @@ function Header() {
 
   function handleLogout() {
     dispatch(logout());
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
   }
 
   return (
     <Box boxShadow="md" borderBottom="1px" borderColor="gray.100">
       <Flex w="80%" mx="auto" align="center" justify="space-between" fontWeight="bold" letterSpacing="tight" py="1">
         <Flex align="center" gap="20">
-          <Link to="/home">
+          <Link to="/">
             <Image h="12" src={logo} />
           </Link>
           <Flex gap="16">

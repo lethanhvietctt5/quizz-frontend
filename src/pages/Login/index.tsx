@@ -35,7 +35,10 @@ function Login() {
     });
 
     if (res.status === 200) {
-      dispatch(login(res.data));
+      dispatch(login(res.data['user']));
+      localStorage.setItem('access_token', res.data['access_token']);
+      localStorage.setItem('refresh_token', res.data['refresh_token']);
+      localStorage.setItem('user', JSON.stringify(res.data['user']));
       navigate('/library');
       return;
     }

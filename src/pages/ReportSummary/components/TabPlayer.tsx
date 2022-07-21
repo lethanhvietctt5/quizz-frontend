@@ -12,7 +12,7 @@ function TabPlayer({ report_id }: Props) {
 
   useEffect(() => {
     async function fetchReports() {
-      const res = await api.get('/report/list_players/' + report_id);
+      const res = await api.get(`/report/${report_id}/players`);
       if (res.status === 200) {
         setPlayers(res.data);
       }

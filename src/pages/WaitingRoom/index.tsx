@@ -5,7 +5,7 @@ import api from 'api';
 import Game from 'types/game';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import Question from 'types/question';
-import { setHost, setListPlayers, setListQuestions, setReportId } from 'redux/slices/game';
+import { removePlayer, setHost, setListPlayers, setListQuestions, setReportId } from 'redux/slices/game';
 import socket from 'socket/socket-service';
 import Report from 'types/report';
 import logo from 'assets/Logo.png';
@@ -23,13 +23,24 @@ const WaitingRoom = () => {
 
   useEffect(() => {
     socket.on('play', () => {
-      navigate('/play');
+      navigate('/play', { replace: true });
     });
   }, [socket]);
 
   useEffect(() => {
     socket.on('new_player', (player: Player) => {
       setPlayers(old => [...old, player]);
+    });
+
+    socket.on('end_game', () => {
+      navigate('/', { replace: true });
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on('player_leave', (player_id: string) => {
+      dispatch(removePlayer(player_id));
+      setPlayers(old => [...old.filter(player => player.player_id !== player_id)]);
     });
   }, []);
 
@@ -47,7 +58,7 @@ const WaitingRoom = () => {
 
   useEffect(() => {
     async function fetchPlayers() {
-      const res = await api.get(`report/list_players/${report_id}`);
+      const res = await api.get(`report/${report_id}/players`);
 
       if (res.status === 200) {
         setPlayers(res.data);
@@ -59,7 +70,7 @@ const WaitingRoom = () => {
 
   useEffect(() => {
     async function fetchGame() {
-      const res = await api.get(`/game/gameByReport/${report_id}`);
+      const res = await api.get(`/report/${report_id}/game`);
       if (res.status === 200) {
         setGame(res.data);
       }
@@ -74,7 +85,7 @@ const WaitingRoom = () => {
 
   useEffect(() => {
     async function fetchQuestions() {
-      const res = await api.get(`/game/getQuestions/${game?.game_id}`);
+      const res = await api.get(`/game/${game?.game_id}/questions`);
       if (res.status === 200) {
         setQuestions(res.data);
       }
@@ -124,7 +135,7 @@ const WaitingRoom = () => {
         )}
       </div>
       <div className="flex justify-center flex-wrap">
-        {players.map(player => (
+        {gameState.players.map(player => (
           <div
             key={player.player_id}
             className="bg-green-700 px-[23px] py-[10px] mr-2 mb-2 text-xl text-[28px] font-semibold text-white rounded-md"

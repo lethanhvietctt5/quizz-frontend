@@ -5,18 +5,20 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from 'socket/socket-service';
 import logo from 'assets/Logo.png';
+import { useAppSelector } from 'hooks';
 
 function Game() {
   const gamePinRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const { toastError } = useCustomToast();
   const navigate = useNavigate();
+  const auth = useAppSelector(state => state.auth);
 
   async function handleEnterGame() {
-    const game = gamePinRef.current?.value;
+    const gamePin = gamePinRef.current?.value;
     const name = nameRef.current?.value;
 
-    if (!game) {
+    if (!gamePin) {
       toastError('Game pin is required');
       return;
     }
@@ -26,7 +28,7 @@ function Game() {
       return;
     }
 
-    const res = await api.get(`/report/reportByPin/${game}`);
+    const res = await api.get(`/report/reportByPin/${gamePin}`);
     if (res.status === 200) {
       socket.emit('join_game', { report_id: res.data.report_id, name: name });
 
@@ -54,9 +56,15 @@ function Game() {
           <Button backgroundColor="green.600" colorScheme="green" color="white" size="md" onClick={handleEnterGame}>
             Enter
           </Button>
-          <Button variant="outline" colorScheme="green" size="md" onClick={() => navigate('/login')}>
-            Login
-          </Button>
+          {auth.user_id ? (
+            <Button variant="outline" colorScheme="green" size="md" onClick={() => navigate('/library')}>
+              Go to Library
+            </Button>
+          ) : (
+            <Button variant="outline" colorScheme="green" size="md" onClick={() => navigate('/login')}>
+              Login
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -1,12 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import User from 'types/user';
 
-const initState: User = {
+let initState: User = {
   user_id: '',
   name: '',
   email: '',
 };
 
+let user = localStorage.getItem('user');
+
+if (user !== null) {
+  initState = JSON.parse(user);
+}
 const authSlice = createSlice({
   name: 'authenticate',
   initialState: initState,

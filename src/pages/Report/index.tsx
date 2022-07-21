@@ -36,7 +36,7 @@ function Report() {
 
   useEffect(() => {
     async function fetchAllReports() {
-      const res = await api.get('/report/all_reports/' + auth.user_id);
+      const res = await api.get(`/user/${auth.user_id}/reports`);
 
       if (res.status === 200) {
         setReports(res.data);

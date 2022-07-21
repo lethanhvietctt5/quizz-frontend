@@ -40,6 +40,11 @@ const gameSlice = createSlice({
 
     setListPlayers: (state, action: PayloadAction<Array<Player>>) => {
       state.players = action.payload;
+      state.players = state.players.filter(player => player.status === 1);
+    },
+
+    removePlayer: (state, action: PayloadAction<string>) => {
+      state.players = state.players.filter(player => player.player_id !== action.payload);
     },
 
     setAns: (state, action: PayloadAction<string>) => {
@@ -50,6 +55,7 @@ const gameSlice = createSlice({
       if (state.canIncrease) {
         state.currentQuestion++;
         state.canIncrease = false;
+        state.currentAns = '';
       }
     },
 
@@ -58,14 +64,29 @@ const gameSlice = createSlice({
     },
 
     resetGame: state => {
-      state = initState;
+      state.reportId = undefined;
+      state.isHost = false;
+      state.questions = [];
+      state.players = [];
+      state.currentQuestion = 0;
+      state.currentAns = '';
+      state.canIncrease = false;
     },
   },
 });
 
 const gameReducer = gameSlice.reducer;
 
-export const { setHost, setListPlayers, setReportId, setListQuestions, setAns, nextQuesion, canInc, resetGame } =
-  gameSlice.actions;
+export const {
+  setHost,
+  setListPlayers,
+  setReportId,
+  setListQuestions,
+  setAns,
+  nextQuesion,
+  canInc,
+  resetGame,
+  removePlayer,
+} = gameSlice.actions;
 
 export default gameReducer;
