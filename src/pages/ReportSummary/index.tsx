@@ -1,38 +1,30 @@
 import {
   Box,
-  Text,
   Button,
+  Flex,
+  HStack,
+  Tab,
   Table,
   TableContainer,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Tbody,
   Td,
+  Text,
   Tr,
-  Input,
-  useEditableControls,
-  ButtonGroup,
-  Flex,
-  Editable,
-  EditablePreview,
-  EditableInput,
-  IconButton,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  HStack,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import api from 'api';
 import { default as dayjs } from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
-import { ImClock, ImQuestion, ImUser } from 'react-icons/im';
-import ReportModel from 'types/report';
-import api from 'api';
-import { useParams } from 'react-router-dom';
 import DonutChart from 'pages/ReportSummary/components/DonutChart';
 import TabPlayer from 'pages/ReportSummary/components/TabPlayer';
 import TabQuestion from 'pages/ReportSummary/components/TabQuestion';
+import React, { useEffect, useState } from 'react';
+import { ImQuestion, ImUser } from 'react-icons/im';
+import { useParams } from 'react-router-dom';
+import ReportModel from 'types/report';
 
 dayjs.extend(localizedFormat);
 
@@ -54,30 +46,10 @@ function ReportSummary() {
     fetchReports();
   }, [report_id]);
 
-  function EditableControls() {
-    const { isEditing, getSubmitButtonProps, getCancelButtonProps, getEditButtonProps } = useEditableControls();
-
-    return isEditing ? (
-      <ButtonGroup justifyContent="center" size="sm">
-        <IconButton icon={<CheckIcon />} aria-label="check" {...getSubmitButtonProps()} />
-        <IconButton icon={<CloseIcon />} aria-label="close" {...getCancelButtonProps()} />
-      </ButtonGroup>
-    ) : (
-      <Flex justifyContent="center">
-        <IconButton size="sm" aria-label="edit" icon={<EditIcon />} {...getEditButtonProps()} />
-      </Flex>
-    );
-  }
-
   return (
     <Box w="60%" mx="auto" mt="10">
       <Text fontSize="3xl">Report</Text>
-      <Editable textAlign="center" defaultValue="Rasengan ⚡️" fontSize="2xl" isPreviewFocusable={false}>
-        <EditablePreview />
-        {/* Here is the custom input */}
-        <Input as={EditableInput} />
-        <EditableControls />
-      </Editable>
+
       <Tabs index={tabIndex} onChange={handleTabsChange}>
         <TabList>
           <Tab>Summary</Tab>
@@ -128,15 +100,6 @@ function ReportSummary() {
                           </Td>
                           <Td isNumeric>
                             <Text align="right">{report?.count_questions}</Text>
-                          </Td>
-                        </Tr>
-                        <Tr border="0">
-                          <Td>
-                            <ImClock size={25} color="green" />
-                          </Td>
-                          <Td>Time</Td>
-                          <Td isNumeric>
-                            <Text align="right">1 min</Text>
                           </Td>
                         </Tr>
                       </Tbody>

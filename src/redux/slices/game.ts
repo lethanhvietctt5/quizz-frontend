@@ -41,6 +41,7 @@ const gameSlice = createSlice({
     setListPlayers: (state, action: PayloadAction<Array<Player>>) => {
       state.players = action.payload;
       state.players = state.players.filter(player => player.status === 1);
+      state.players.sort((a, b) => b.score - a.score);
     },
 
     removePlayer: (state, action: PayloadAction<string>) => {
