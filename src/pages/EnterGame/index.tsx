@@ -42,7 +42,7 @@ function Game() {
 
   return (
     <div className="w-full h-screen flex justify-center bg-gray-200">
-      <div className="w-1/3 flex flex-col items-center justify-center space-y-12 bg-white my-20 rounded-3xl">
+      <div className="w-1/2 2xl:w-1/3 flex flex-col items-center justify-center space-y-12 bg-white my-20 rounded-3xl">
         <div>
           <Image h="100" src={logo} />
         </div>
